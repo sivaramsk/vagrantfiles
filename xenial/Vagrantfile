@@ -75,6 +75,7 @@ Vagrant.configure("2") do |config|
     apt-get update
     apt-get -y dist-upgrade
     apt-get install -y htop docker.io openjdk-8-jdk autoconf libtool build-essential python-dev libcurl4-nss-dev libsasl2-dev libsasl2-modules maven libapr1-dev libsvn-dev zlib1g-dev
+    chown -R ubuntu:ubuntu /mnt/data
   SHELL
 
    
