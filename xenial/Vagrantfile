@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
-  config.vm.box = "ubuntu/xenial64"
+  config.vm.box = "geant/xenial64"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -34,12 +34,13 @@ Vagrant.configure("2") do |config|
   # config.vm.network "public_network"
 
   # Share an additional folder to the guest VM. The first argument is
+
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
   config.vm.synced_folder "./data", "/vagrant_data"
 
-  config.persistent_storage.diskdevice = '/dev/sdc'
+  config.persistent_storage.diskdevice = '/dev/sdb'
   config.persistent_storage.enabled = true
   config.persistent_storage.location = "./storage.vdi"
   config.persistent_storage.size = 50000
@@ -47,14 +48,17 @@ Vagrant.configure("2") do |config|
   config.persistent_storage.filesystem = 'ext4'
   config.persistent_storage.mountpoint = '/mnt/data'
   config.persistent_storage.volgroupname = 'myvolgroup'
-    
+
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
   # Example for VirtualBox:
   #
   config.vm.provider "virtualbox" do |vb|
+  #   # Display the VirtualBox GUI when booting the machine
      vb.gui = false
      vb.cpus = 2
+  
+     # Customize the amount of memory on the VM:
      vb.memory = "4096"
   end
   #
@@ -72,19 +76,22 @@ Vagrant.configure("2") do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
-    apt-get update
-    apt-get -y dist-upgrade
-    apt-get install -y htop docker.io openjdk-8-jdk autoconf libtool build-essential python-dev libcurl4-nss-dev libsasl2-dev libsasl2-modules maven libapr1-dev libsvn-dev zlib1g-dev
-    usermod -a -G docker ubuntu
-    chown -R ubuntu:ubuntu /mnt/data
+     systemctl stop apt-daily.service
+     systemctl kill --kill-who=all apt-daily.service
+     # wait until `apt-get updated` has been killed
+     while ! (systemctl list-units --all apt-daily.service | fgrep -q dead); do sleep 1; done
+
+     apt-get update 
+     apt-get dist-upgrade 
+     apt-get install -y vim git tmux curl build-essential ccache tar wget git openjdk-8-jdk autoconf libtool build-essential python-dev libcurl4-nss-dev libsasl2-dev libsasl2-modules maven libapr1-dev libsvn-dev zlib1g-dev
+     mkdir -p /home/vagrant/.ccache
+     echo "max_size = 5.0G" >> /home/vagrant/.ccache/.ccache
+     echo "cache_dir = /mnt/data/.ccache" >> /home/vagrant/.ccache/.ccache
+     curl -o /home/vagrant/.git-prompt.sh https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
+     mkdir -p /home/vagrant/.vim && curl -fLo /home/vagrant/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+     cp /vagrant_data/.vimrc /home/vagrant/
+     cp /vagrant_data/.bashrc /home/vagrant/
+     chown -R vagrant.vagrant /home/vagrant/.vimrc /home/vagrant/.bashrc /home/vagrant/.vim
   SHELL
 
-   
-  config.vm.provision "file", source: "bashrc", destination: "/tmp/bashrc" 
-  config.vm.provision "shell", privileged: false, inline: <<-SHELL
-	cp /home/ubuntu/.bashrc /home/ubuntu/bashrc_orig
-        cat /tmp/bashrc >> /home/ubuntu/.bashrc
-	rm /tmp/bashrc
-  SHELL
-  
 end
