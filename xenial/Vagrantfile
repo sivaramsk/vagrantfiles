@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
-  config.vm.box = "geant/xenial64"
+  config.vm.box = "ubuntu/xenial64"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -84,15 +84,15 @@ Vagrant.configure("2") do |config|
      apt-get update 
      apt-get dist-upgrade 
      apt-get install -y vim git tmux curl build-essential ccache tar wget git openjdk-8-jdk autoconf libtool build-essential python-dev libcurl4-nss-dev libsasl2-dev libsasl2-modules maven libapr1-dev libsvn-dev zlib1g-dev
-     mkdir -p /home/vagrant/.ccache
-     echo "max_size = 5.0G" >> /home/vagrant/.ccache/.ccache
-     echo "cache_dir = /mnt/data/.ccache" >> /home/vagrant/.ccache/.ccache
-     curl -o /home/vagrant/.git-prompt.sh https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
-     curl -o /home/vagrant/.git-completion.bash https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash
-     mkdir -p /home/vagrant/.vim && curl -fLo /home/vagrant/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-     cp /vagrant_data/.vimrc /home/vagrant/
-     cp /vagrant_data/.bashrc /home/vagrant/
-     chown -R vagrant.vagrant /home/vagrant/.vimrc /home/vagrant/.bashrc /home/vagrant/.vim
+     mkdir -p /home/ubuntu/.ccache
+     echo "max_size = 5.0G" >> /home/ubuntu/.ccache/.ccache
+     echo "cache_dir = /mnt/data/.ccache" >> /home/ubuntu/.ccache/.ccache
+     curl -o /home/ubuntu/.git-prompt.sh https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
+     curl -o /home/ubuntu/.git-completion.bash https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash
+     mkdir -p /home/ubuntu/.vim && curl -fLo /home/ubuntu/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+     cp /vagrant_data/.vimrc /home/ubuntu/
+     cp /vagrant_data/.bashrc /home/ubuntu/
+     chown -R ubuntu.ubuntu /home/ubuntu/.vimrc /home/ubuntu/.bashrc /home/ubuntu/.vim
   SHELL
 
 end
