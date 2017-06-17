@@ -38,7 +38,6 @@ Vagrant.configure("2") do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  config.vm.synced_folder "./data", "/vagrant_data"
 
   config.persistent_storage.diskdevice = '/dev/sdb'
   config.persistent_storage.enabled = true
@@ -49,6 +48,7 @@ Vagrant.configure("2") do |config|
   config.persistent_storage.mountpoint = '/mnt/data'
   config.persistent_storage.volgroupname = 'myvolgroup'
 
+  config.vm.synced_folder "./data", "/mnt/data", type: "sshfs"
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
   # Example for VirtualBox:
@@ -92,6 +92,8 @@ Vagrant.configure("2") do |config|
      mkdir -p /home/ubuntu/.vim && curl -fLo /home/ubuntu/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
      cp /vagrant_data/.vimrc /home/ubuntu/
      cp /vagrant_data/.bashrc /home/ubuntu/
+     dos2unix /home/ubuntu/.vimrc
+     dos2unix /home/ubuntu/.bashrc
      chown -R ubuntu.ubuntu /home/ubuntu/.vimrc /home/ubuntu/.bashrc /home/ubuntu/.vim
   SHELL
 
