@@ -83,7 +83,7 @@ Vagrant.configure("2") do |config|
 
      apt-get update 
      apt-get dist-upgrade 
-     apt-get install -y vim git tmux curl build-essential ccache tar wget git openjdk-8-jdk autoconf libtool build-essential python-dev libcurl4-nss-dev libsasl2-dev libsasl2-modules maven libapr1-dev libsvn-dev zlib1g-dev
+     apt-get install -y vim git tmux curl build-essential ccache tar wget git openjdk-8-jdk autoconf libtool build-essential python-dev libcurl4-nss-dev libsasl2-dev libsasl2-modules maven libapr1-dev libsvn-dev zlib1g-dev dos2unix
      mkdir -p /home/ubuntu/.ccache
      echo "max_size = 5.0G" >> /home/ubuntu/.ccache/.ccache
      echo "cache_dir = /mnt/data/.ccache" >> /home/ubuntu/.ccache/.ccache
