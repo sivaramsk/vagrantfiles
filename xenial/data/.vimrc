@@ -15,7 +15,7 @@ call plug#begin('~/.vim/plugged')
 Plug 'junegunn/goyo.vim'
 
 " completion during typing
-Plug 'neocomplcache'
+" Plug 'neocomplcache'
 " solarized colorscheme
 Plug 'altercation/vim-colors-solarized'
 " Right way to handle trailing-whitespace
@@ -48,7 +48,7 @@ Plug 'tpope/vim-fireplace'
 " Plug 'tpope/vim-classpath'
 
 "" Color
-Plug 'tomasr/molokai'
+Plug 'vim-airline/vim-airline-themes'
 
 " go
 "" Go Lang Bundle
@@ -223,9 +223,6 @@ set number
 set paste
 
 let no_buffers_menu=1
-if !exists('g:not_finish_vimplug')
-  colorscheme molokai
-endif
 
 set mousemodel=popup
 set t_Co=256
@@ -337,4 +334,4 @@ nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
 " Enable NerdTree
 map <C-n> :NERDTreeToggle<CR>
 map <C-l> :TagbarToggle<CR>
-
+let g:airline_theme='molokai'

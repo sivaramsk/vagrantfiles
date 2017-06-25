@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
-  config.vm.box = "ubuntu/xenial64"
+  config.vm.box = "cdaf/UbuntuLVM"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -26,7 +26,7 @@ Vagrant.configure("2") do |config|
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
-  # config.vm.network "private_network", ip: "192.168.33.10"
+  config.vm.network "private_network", ip: "192.168.33.10"
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
@@ -38,6 +38,7 @@ Vagrant.configure("2") do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
+  config.vm.synced_folder "./data", "/vagrant_data"
 
   config.persistent_storage.diskdevice = '/dev/sdb'
   config.persistent_storage.enabled = true
@@ -82,18 +83,22 @@ Vagrant.configure("2") do |config|
 
      apt-get update 
      apt-get dist-upgrade 
-     apt-get install -y vim git tmux curl build-essential ccache tar wget git openjdk-8-jdk autoconf libtool build-essential python-dev libcurl4-nss-dev libsasl2-dev libsasl2-modules maven libapr1-dev libsvn-dev zlib1g-dev dos2unix
+     apt-get install -y vim git tmux curl build-essential ccache tar wget git apt-transport-https ca-certificates software-properties-common openjdk-8-jdk autoconf libtool build-essential python-dev libcurl4-nss-dev libsasl2-dev libsasl2-modules maven libapr1-dev libsvn-dev zlib1g-dev dos2unix
      mkdir -p /home/ubuntu/.ccache
-     echo "max_size = 5.0G" >> /home/ubuntu/.ccache/.ccache
-     echo "cache_dir = /mnt/data/.ccache" >> /home/ubuntu/.ccache/.ccache
-     curl -o /home/ubuntu/.git-prompt.sh https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
-     curl -o /home/ubuntu/.git-completion.bash https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash
-     mkdir -p /home/ubuntu/.vim && curl -fLo /home/ubuntu/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-     cp /vagrant_data/.vimrc /home/ubuntu/
-     cp /vagrant_data/.bashrc /home/ubuntu/
-     dos2unix /home/ubuntu/.vimrc
-     dos2unix /home/ubuntu/.bashrc
-     chown -R ubuntu.ubuntu /home/ubuntu/.vimrc /home/ubuntu/.bashrc /home/ubuntu/.vim
+     echo "max_size = 5.0G" >> /home/vagrant/.ccache/.ccache
+     echo "cache_dir = /mnt/data/.ccache" >> /home/vagrant/.ccache/.ccache
+     curl -o /home/vagrant/.git-prompt.sh https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
+     curl -o /home/vagrant/.git-completion.bash https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash
+     mkdir -p /home/vagrant/.vim && curl -fLo /home/vagrant/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+     cp /vagrant_data/.vimrc /home/vagrant/
+     cp /vagrant_data/.bashrc /home/vagrant/
+     cp /vagrant_data/install-req-softwares.sh /home/vagrant/
+     cp -r /vagrant_data/.ssh/id_rsa /vagrant_data/.ssh/id_rsa.pub /home/vagrant/.ssh/
+     chmod 600 /home/vagrant/.ssh/id_rsa
+     dos2unix /home/vagrant/.vimrc
+     dos2unix /home/vagrant/.bashrc
+     chown -R vagrant.vagrant /home/vagrant/.vimrc /home/vagrant/.bashrc /home/vagrant/.vim /home/vagrant/.ssh/*
+     bash /home/vagrant/install-req-softwares.sh
   SHELL
 
 end
