@@ -17,7 +17,7 @@ Plug 'junegunn/goyo.vim'
 " completion during typing
 " Plug 'neocomplcache'
 " solarized colorscheme
-Plug 'altercation/vim-colors-solarized'
+Plug 'chriskempson/base16-vim'
 " Right way to handle trailing-whitespace
 Plug 'bronson/vim-trailing-whitespace'
 " NERDTree
@@ -334,4 +334,6 @@ nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
 " Enable NerdTree
 map <C-n> :NERDTreeToggle<CR>
 map <C-l> :TagbarToggle<CR>
+colorscheme base16-atelier-cave
+let base16colorspace=256
 let g:airline_theme='molokai'
