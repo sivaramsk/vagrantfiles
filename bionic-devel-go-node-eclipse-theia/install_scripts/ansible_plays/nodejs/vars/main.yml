@@ -1,0 +1,6 @@
+nodejs_version: "12.x"
+nodejs_install_npm_user: "{{ ansible_ssh_user }}"
+npm_config_unsafe_perm: "true"
+nodejs_npm_global_packages:
+  - name: jslint
+  - name: node-sass

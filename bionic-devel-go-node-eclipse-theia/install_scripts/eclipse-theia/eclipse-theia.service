@@ -1,0 +1,12 @@
+[Unit]
+Description=Start Eclipse Theia Cloud IDE
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/docker run --init --rm -p 3000:3000 -v "/vagrant_data/projects:/home/project:cached" theiaide/theia:next
+RestartSec=10
+
+[Install]
+WantedBy=local.target
