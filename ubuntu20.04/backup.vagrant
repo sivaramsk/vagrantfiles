@@ -1,0 +1,26 @@
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+    config.vm.box = "generic/ubuntu2004"
+    config.vm.box_version = "3.1.16"
+    config.vm.provision:shell, inline: <<-SHELL
+        echo "root:rootroot" | sudo chpasswd
+        sudo timedatectl set-timezone Asia/Kolkata
+    SHELL
+
+    config.vm.define "ubuntu20.04" do |ubuntu|
+        ubuntu.vm.hostname = "ubuntu20.04"
+    end
+
+    config.vm.synced_folder ".", "/vagrant"
+    config.vm.provision:shell, path: "bootstrap.sh"
+
+    config.customize [ 'storageattach', 
+        :id, # the id will be replaced (by vagrant) by the identifier of the actual machine
+        '--storagectl', 'SCSI Controller', # one of `SATA Controller` or `SCSI Controller` or `IDE Controller`; 
+                                           # obtain the right name using: vboxmanage showvminfo  
+        '--port', 2,     # port of storage controller. Note that port #0 is for 1st hard disk, so start numbering from 1.
+        '--device', 0,   # the device number inside given port (usually is #0) 
+        '--type', 'hdd', 
+        '--medium', File.absolute_path('disk-2.vdi')] # path to our VDI image
+end
+
+
