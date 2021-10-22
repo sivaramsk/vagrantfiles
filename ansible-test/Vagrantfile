@@ -1,0 +1,41 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+VAGRANTFILE_API_VERSION = "2"
+
+
+Vagrant.configure(2) do |config|
+  config.vm.box = "generic/ubuntu2004"
+
+  config.vm.network "private_network", ip: "192.168.56.30"
+
+  # config.vm.synced_folder "../data", "/vagrant_data"
+  config.vm.synced_folder ".", "/vagrant"
+  config.vm.box_version = "3.1.16"
+  config.vm.provision:shell, inline: <<-SHELL
+      echo "root:rootroot" | sudo chpasswd
+      sudo timedatectl set-timezone Asia/Kolkata
+      sudo apt update -y
+      sudo apt -y install gcc curl
+  SHELL
+
+  config.vm.provider "virtualbox" do |vb|
+     vb.name = "ubuntu-devel-machine"
+     vb.memory = 4096
+  end
+
+  config.vm.provision 'preemptively give others write access to /etc/ansible/roles', type: :shell, inline: <<~'EOM'
+    sudo mkdir /etc/ansible/roles -p
+    sudo chmod o+w /etc/ansible/roles
+  EOM
+
+  config.vm.provision 'ansible', run: 'always', type: :ansible_local do |ansible|
+    ansible.galaxy_role_file = 'requirements.yml'
+    ansible.galaxy_roles_path = '/etc/ansible/roles'
+    ansible.galaxy_command = 'ansible-galaxy install --role-file=%{role_file} --roles-path=%{roles_path}'
+    ansible.playbook = 'playbook.yml'
+  end
+  #config.vm.provision "shell", inline: <<-SHELL
+  #  sudo apt-get update
+  #SHELL
+end

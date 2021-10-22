@@ -1,0 +1,40 @@
+- hosts: all
+
+  roles:
+    - role: geerlingguy.docker
+      become: true
+
+    - role: fubarhouse.rust
+      vars:
+        rust_version: 1.31.0
+        build_rust_from_source: false
+        rust_update: false
+        rust_install_clean: false
+        shell_profiles: /home/vagrant/.zshrc
+        
+    - role: fubarhouse.golang
+      become: true
+      vars: 
+        GOROOT_BOOTSTRAP: /home/vagrant/go
+        build_go_from_source: false
+        install_go_bootstrap: false
+        go_build_script: make.bash
+        mode_codebase: 0755
+        golang_shell_profile: /home/vagrant/.zshrc
+
+    - role: gantsign.antigen
+      users:
+        - username: vagrant
+          antigen_libraries:
+            - name: oh-my-zsh
+          antigen_theme:
+            name: robbyrussell
+          antigen_bundles:
+            # Bundles from the default repo (robbyrussell's oh-my-zsh).
+            - name: git
+            - name: pip
+            - name: lein
+            - name: command-not-found
+            # Syntax highlighting bundle.
+            - name: zsh-syntax-highlighting # `name` is required (any valid file name will do so long as it's unique for the bundles)
+              url: zsh-users/zsh-syntax-highlighting
