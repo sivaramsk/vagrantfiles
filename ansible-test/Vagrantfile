@@ -15,8 +15,6 @@ Vagrant.configure(2) do |config|
   config.vm.provision:shell, inline: <<-SHELL
       echo "root:rootroot" | sudo chpasswd
       sudo timedatectl set-timezone Asia/Kolkata
-      sudo apt update -y
-      sudo apt -y install gcc curl
   SHELL
 
   config.vm.provider "virtualbox" do |vb|
