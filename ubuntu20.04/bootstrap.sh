@@ -31,15 +31,16 @@ install_docker() {
  
     sudo apt update
     sudo apt install -y docker-ce docker-ce-cli containerd.io
-    sudo groupadd docker
-    sudo gpasswd -a $USER docker
     sudo chmod 777 /var/run/docker.sock
     # Add vagrant to docker group
     sudo groupadd docker
     sudo gpasswd -a vagrant docker
+    sudo usermod -aG docker $USER
     # Setup docker daemon host
     # Read more about docker daemon https://docs.docker.com/engine/reference/commandline/dockerd/
-    sed -i 's/ExecStart=.*/ExecStart=\/usr\/bin\/dockerd -H unix:\/\/\/var\/run\/docker.sock -H tcp:\/\/192.168.121.210/g' /lib/systemd/system/docker.service
+    # sed -i 's/ExecStart=.*/ExecStart=\/usr\/bin\/dockerd -H unix:\/\/\/var\/run\/docker.sock -H tcp:\/\/192.168.121.210/g' /lib/systemd/system/docker.service
+    sudo systemctl enable docker.service
+    sudo systemctl enable containerd.service
     sudo systemctl daemon-reload
     sudo systemctl restart docker
 }
@@ -65,6 +66,28 @@ setup_root_login() {
     sudo echo "root:rootroot" | chpasswd
 }
 
+setup_code_server() {
+	echo "Setting up Code server"
+	curl -fsSL https://code-server.dev/install.sh | sh
+	sudo systemctl enable --now code-server@$USER
+}
+
+install_golang() {
+	echo "Install Golang Version 1.17.2"
+	wget -c https://golang.org/dl/go1.17.2.linux-amd64.tar.gz -o /tmp/go1.17.2.linux-amd64.tar.gz
+	rm -rf /usr/local/go && tar -C /usr/local -xzf go1.17.2.linux-amd64.tar.gz
+	echo "PATH=$PATH:/usr/local/go/bin" >> ~/.bashrc
+
+}
+
+install_rust() {
+	echo "Installing Rust"
+	sudo su vagrant
+	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+	echo "PATH=$PATH:~/.cargo/bin" >> ~/.bashrc
+	exit
+}
+
 setup_welcome_msg() {
     sudo apt -y install cowsay
     version=$(cat /etc/os-release |grep VERSION= | cut -d'=' -f2 | sed 's/"//g')
@@ -77,8 +100,11 @@ main() {
     resolve_dns
     install_openssh
     setup_root_login
-    setup_welcome_msg
-    #install_docker
+    #setup_welcome_msg
+    install_docker
+    install_rust
+    install_golang
+    setup_code_server
 }
 
 main
