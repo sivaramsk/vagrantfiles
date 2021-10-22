@@ -1,6 +1,11 @@
 - hosts: all
 
   roles:
+    - role: ansible/roles/packages
+      vars:
+        packages:
+          - gcc
+          - curl
     - role: geerlingguy.docker
       become: true
 
@@ -15,11 +20,12 @@
     - role: fubarhouse.golang
       become: true
       vars: 
-        GOROOT_BOOTSTRAP: /home/vagrant/go
+        go_version: 1.16
         build_go_from_source: false
         install_go_bootstrap: false
         go_build_script: make.bash
         mode_codebase: 0755
+        go_reget: true
         golang_shell_profile: /home/vagrant/.zshrc
 
     - role: gantsign.antigen
@@ -38,3 +44,5 @@
             # Syntax highlighting bundle.
             - name: zsh-syntax-highlighting # `name` is required (any valid file name will do so long as it's unique for the bundles)
               url: zsh-users/zsh-syntax-highlighting
+
+    - role: ansible/roles/code-server
