@@ -1,45 +1,21 @@
-# -*- mode: ruby -*-
-# vi: set ft=ruby :
+Vagrant.configure("2") do |config|
 
-VAGRANTFILE_API_VERSION = "2"
+config.ssh.insert_key = false
+config.vm.provider :virtualbox do |vb|
+  vb.memory = 4096
+  vb.cpus = 2
+end
 
+#Disabling the default /vagrant share
+config.vm.synced_folder ".", "/vagrant", disabled: true
+MACHINE = ["arango1","arango2","arango3"]
+N = 2
 
-Vagrant.configure(2) do |config|
-  config.vm.box = "generic/ubuntu2004"
-
-  config.vm.network "private_network", ip: "192.168.56.20"
-
-  # config.vm.synced_folder "../data", "/vagrant_data"
-  config.vm.synced_folder ".", "/vagrant"
-  config.vm.box_version = "3.1.16"
-  config.vm.provision:shell, inline: <<-SHELL
-      echo "root:rootroot" | sudo chpasswd
-      sudo timedatectl set-timezone Asia/Kolkata
-  SHELL
-  config.vm.provision:shell, path: "bootstrap.sh"
-
-
-  config.vm.provider "virtualbox" do |vb|
-     vb.name = "arangodb-test-machine"
-     vb.memory = 8192
-     
-     # Attach another hard disk 
-     # Note: Create a hard disk image: vboxmanage createmedium --filename $PWD/disk-2.vdi --size 1024 --format VDI 
-
-     vb.customize ["storagectl", :id, "--name", "SATA Controller", "--add", "sata"]
-     # see https://www.virtualbox.org/manual/ch08.html#vboxmanage-storageattach
-     vb.customize [ 'storageattach', 
-        :id, # the id will be replaced (by vagrant) by the identifier of the actual machine
-        '--storagectl', 'SATA Controller', # one of `SATA Controller` or `SCSI Controller` or `IDE Controller`; 
-                                           # obtain the right name using: vboxmanage showvminfo  
-        '--port', 2,     # port of storage controller. Note that port #0 is for 1st hard disk, so start numbering from 1.
-        '--device', 0,   # the device number inside given port (usually is #0) 
-        '--type', 'hdd', 
-        '--medium', File.absolute_path('disk-2.vdi')] # path to our VDI image
-            
-  end
-
-  #config.vm.provision "shell", inline: <<-SHELL
-  #  sudo apt-get update
-  #SHELL
+(0..N).each do |i|
+config.vm.define "server#{i}" do |node|
+  node.vm.hostname = MACHINE[i]
+  node.vm.box = "generic/ubuntu2004"
+  node.vm.network :private_network, ip: "192.168.56.#{100+i}"
+end
+end
 end
