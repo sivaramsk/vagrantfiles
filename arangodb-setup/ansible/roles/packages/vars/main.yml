@@ -1,0 +1,6 @@
+---
+# vars file for code-server
+vars:
+  packages:
+    - gcc
+    - curl

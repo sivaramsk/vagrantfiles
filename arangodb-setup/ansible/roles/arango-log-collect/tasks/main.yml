@@ -1,0 +1,7 @@
+---
+# tasks file for code-server
+- name: Install Code-server
+  ansible.builtin.shell: 
+    cmd: curl -fsSL https://code-server.dev/install.sh | sh 
+  become: true
+

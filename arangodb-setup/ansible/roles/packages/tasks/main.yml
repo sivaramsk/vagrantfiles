@@ -1,0 +1,7 @@
+---
+# tasks file for code-server
+- name: Install packages
+  apt: 
+    pkg: "{{ packages }}"
+  become: true
+

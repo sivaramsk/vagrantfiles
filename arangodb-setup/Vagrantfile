@@ -1,21 +1,35 @@
 Vagrant.configure("2") do |config|
 
-config.ssh.insert_key = false
-config.vm.provider :virtualbox do |vb|
-  vb.memory = 4096
-  vb.cpus = 2
-end
+  config.ssh.insert_key = false
+  
+  config.vm.provider :virtualbox do |vb|
+   vb.memory = 4096
+   vb.cpus = 2
+  end
 
-#Disabling the default /vagrant share
-config.vm.synced_folder ".", "/vagrant", disabled: true
-MACHINE = ["arango1","arango2","arango3"]
-N = 2
+  #Disabling the default /vagrant share
+  config.vm.synced_folder ".", "/vagrant", disabled: false
+  MACHINE = ["arango1","arango2","arango3"]
+  N = 1
 
-(0..N).each do |i|
-config.vm.define "server#{i}" do |node|
-  node.vm.hostname = MACHINE[i]
-  node.vm.box = "generic/ubuntu2004"
-  node.vm.network :private_network, ip: "192.168.56.#{100+i}"
-end
-end
+  (0..N).each do |i|
+    config.vm.define "server#{i}" do |node|
+      node.vm.hostname = MACHINE[i]
+      node.vm.box = "generic/ubuntu2004"
+      node.vm.network :private_network, ip: "192.168.56.#{100+i}"
+    end
+  end
+
+  config.vm.provision 'preemptively give others write access to /etc/ansible/roles', type: :shell, inline: <<~'EOM'
+  sudo mkdir /etc/ansible/roles -p
+  sudo chmod o+w /etc/ansible/roles
+  EOM
+
+  config.vm.provision 'ansible', run: 'always', type: :ansible_local do |ansible|
+   ansible.galaxy_role_file = 'requirements.yml'
+   ansible.galaxy_roles_path = '/etc/ansible/roles'
+   ansible.galaxy_command = 'ansible-galaxy install --role-file=%{role_file} --roles-path=%{roles_path}'
+   ansible.playbook = 'playbook.yml'
+  end
+
 end
