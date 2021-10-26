@@ -1,0 +1,26 @@
+- hosts: all
+
+  roles:
+    - role: ansible/roles/packages
+      vars:
+        packages:
+          - gcc
+          - curl
+    - role: gantsign.antigen
+      users:
+        - username: vagrant
+          antigen_libraries:
+            - name: oh-my-zsh
+          antigen_theme:
+            name: robbyrussell
+          antigen_bundles:
+            # Bundles from the default repo (robbyrussell's oh-my-zsh).
+            - name: git
+            - name: pip
+            - name: lein
+            - name: command-not-found
+            # Syntax highlighting bundle.
+            - name: zsh-syntax-highlighting # `name` is required (any valid file name will do so long as it's unique for the bundles)
+              url: zsh-users/zsh-syntax-highlighting
+
+    - role: ansible/roles/arangodb

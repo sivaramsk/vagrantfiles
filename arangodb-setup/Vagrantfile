@@ -10,7 +10,7 @@ Vagrant.configure("2") do |config|
   #Disabling the default /vagrant share
   config.vm.synced_folder ".", "/vagrant", disabled: false
   MACHINE = ["arango1","arango2","arango3"]
-  N = 1
+  N = 2
 
   (0..N).each do |i|
     config.vm.define "server#{i}" do |node|
