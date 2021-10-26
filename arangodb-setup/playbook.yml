@@ -6,6 +6,7 @@
         packages:
           - gcc
           - curl
+          - net-tools
     - role: gantsign.antigen
       users:
         - username: vagrant
