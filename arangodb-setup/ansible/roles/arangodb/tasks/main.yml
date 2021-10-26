@@ -1,7 +1,9 @@
 ---
-# tasks file for code-server
-- name: Install Code-server
-  ansible.builtin.shell: 
-    cmd: curl -fsSL https://code-server.dev/install.sh | sh 
+# tasks file for arangodb download and install
+- name: Download and Install ArangoDB
+  ansible.builtin.unarchive: 
+    src: https://download.arangodb.com/9c169fe900ff79790395784287bfa82f0dc0059375a34a2881b9b745c8efd42e/arangodb38/Enterprise/Linux/arangodb3e-linux-3.8.1.tar.gz
+    dest: /usr/local
+    remote_src: yes
   become: true
 
