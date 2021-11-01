@@ -7,6 +7,9 @@
           - gcc
           - curl
           - net-tools
+
+    - role: ansible/roles/arangodb
+
     - role: gantsign.antigen
       users:
         - username: vagrant
@@ -24,4 +27,17 @@
             - name: zsh-syntax-highlighting # `name` is required (any valid file name will do so long as it's unique for the bundles)
               url: zsh-users/zsh-syntax-highlighting
 
-    - role: ansible/roles/arangodb
+  tasks:
+    - name: Add arangodb Group
+      group:
+        name: arangodb
+        state: present 
+      become: true
+
+    - name: Add arangodb User
+      user:
+        name: arangodb
+        password: '$6$B7cUmIqjOY$WSFHIGrVUCX2wG6vnzXH0Mz0ERkY7tI.TTvjGaImP/.fEsP5hBWntI7bnbdDt17a6RJ8GdKZKloKuFZbnBAzY1' 
+        create_home: yes
+        groups: arangodb
+      become: true
