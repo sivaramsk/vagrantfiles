@@ -43,12 +43,9 @@
     dest: "{{ item.dest }}"
     mode: '644'
   loop:
-    - { src: "/vagrant/config/cluster/agent.conf", dest: "/etc/arangodb3/agent.conf"}
-    - { src: "/vagrant/config/cluster/coordinator.conf", dest: "/etc/arangodb3/coordinator.conf"}
-    - { src: "/vagrant/config/cluster/dbserver.conf", dest: "/etc/arangodb3/dbserver.conf"}
-    - { src: "/vagrant/config/systemdunits/agent.service", dest: "/etc/systemd/system/agent.service"}
-    - { src: "/vagrant/config/systemdunits/coordinator.service", dest: "/etc/systemd/system/coordinator.service"}
-    - { src: "/vagrant/config/systemdunits/dbserver.service", dest: "/etc/systemd/system/dbserver.service"}
+    - { src: "config/systemdunits/agent.service", dest: "/etc/systemd/system/agent.service"}
+    - { src: "config/systemdunits/coordinator.service", dest: "/etc/systemd/system/coordinator.service"}
+    - { src: "config/systemdunits/dbserver.service", dest: "/etc/systemd/system/dbserver.service"}
   become: true
   vars:
     starter_join_ips: "192.168.0.20:8528,192.168.0.21:8528,192.168.0.22:8528"
